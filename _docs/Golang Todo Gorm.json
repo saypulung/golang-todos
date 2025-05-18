@@ -1,0 +1,224 @@
+{
+  "v": 6,
+  "name": "Golang Todo Gorm",
+  "folders": [
+    {
+      "v": 6,
+      "name": "Auth",
+      "folders": [],
+      "requests": [
+        {
+          "v": "11",
+          "name": "Signup",
+          "method": "POST",
+          "endpoint": "<<baseUrl>>/auth/signup",
+          "params": [],
+          "headers": [],
+          "preRequestScript": "",
+          "testScript": "pw.test(\"Login should be passed\", () => {\n  \tpw.expect(pw.response.status).toBe(200)\n})\n\npw.test(\"Set Auth Header\", () => {\n  let json = pw.response.body;\n  \n  pw.expect(json?.auth?.token).not.toBe(undefined)\n  pw.env.set(\"tokenAuth\", json?.auth?.token)\n  pw.expect(pw.env.get(\"tokenAuth\")).toBe(json?.auth?.token)\n})",
+          "auth": {
+            "authType": "none",
+            "authActive": true
+          },
+          "body": {
+            "contentType": "application/json",
+            "body": "{\n  \"email\": \"meong2@meong.id\",\n  \"password\": \"Meong1234!\",\n  \"name\": \"meong\"\n}"
+          },
+          "requestVariables": [],
+          "responses": {}
+        },
+        {
+          "v": "11",
+          "name": "Login",
+          "method": "POST",
+          "endpoint": "<<baseUrl>>/auth/login",
+          "params": [],
+          "headers": [],
+          "preRequestScript": "",
+          "testScript": "pw.test(\"Login should be passed\", () => {\n  \tpw.expect(pw.response.status).toBe(200)\n})\n\npw.test(\"Set Auth Header\", () => {\n  let json = pw.response.body;\n  \n  pw.expect(json?.auth?.token).not.toBe(undefined)\n  pw.env.set(\"tokenAuth\", json?.auth?.token)\n  pw.expect(pw.env.get(\"tokenAuth\")).toBe(json?.auth?.token)\n})",
+          "auth": {
+            "authType": "none",
+            "authActive": true
+          },
+          "body": {
+            "contentType": "application/json",
+            "body": "{\n  \"email\": \"meong2@meong.id\",\n  \"password\": \"Meong1234!\"\n}"
+          },
+          "requestVariables": [],
+          "responses": {}
+        }
+      ],
+      "auth": {
+        "authType": "inherit",
+        "authActive": true
+      },
+      "headers": [],
+      "_ref_id": "coll_mau7z5vv_4dae516a-6ce9-4a8d-8f65-a58dffa77644"
+    },
+    {
+      "v": 6,
+      "name": "Todo",
+      "folders": [],
+      "requests": [
+        {
+          "v": "11",
+          "name": "List",
+          "method": "GET",
+          "endpoint": "<<baseUrl>>/todo/list",
+          "params": [],
+          "headers": [],
+          "preRequestScript": "",
+          "testScript": "pw.test(\"Login should be passed\", () => {\n  \tpw.expect(pw.response.status).toBe(200)\n})\n\npw.test(\"Set Auth Header\", () => {\n  let json = pw.response.body;\n  \n  pw.expect(json?.auth?.token).not.toBe(undefined)\n  pw.env.set(\"tokenAuth\", json?.auth?.token)\n  pw.expect(pw.env.get(\"tokenAuth\")).toBe(json?.auth?.token)\n})",
+          "auth": {
+            "authType": "inherit",
+            "authActive": true
+          },
+          "body": {
+            "contentType": "application/json",
+            "body": ""
+          },
+          "requestVariables": [],
+          "responses": {}
+        },
+        {
+          "v": "11",
+          "name": "Create",
+          "method": "POST",
+          "endpoint": "<<baseUrl>>/todo/create",
+          "params": [],
+          "headers": [],
+          "preRequestScript": "",
+          "testScript": "",
+          "auth": {
+            "authType": "inherit",
+            "authActive": true
+          },
+          "body": {
+            "contentType": "application/json",
+            "body": "{\n  \"task\": \"cleanup kandang\"\n}"
+          },
+          "requestVariables": [],
+          "responses": {}
+        },
+        {
+          "v": "11",
+          "name": "Get by ID",
+          "method": "GET",
+          "endpoint": "<<baseUrl>>/todo/<<id>>",
+          "params": [],
+          "headers": [],
+          "preRequestScript": "",
+          "testScript": "",
+          "auth": {
+            "authType": "inherit",
+            "authActive": true
+          },
+          "body": {
+            "contentType": "application/json",
+            "body": ""
+          },
+          "requestVariables": [
+            {
+              "key": "id",
+              "value": "9",
+              "active": true
+            }
+          ],
+          "responses": {}
+        },
+        {
+          "v": "11",
+          "name": "Update by ID",
+          "method": "PATCH",
+          "endpoint": "<<baseUrl>>/todo/<<id>>",
+          "params": [],
+          "headers": [],
+          "preRequestScript": "",
+          "testScript": "",
+          "auth": {
+            "authType": "inherit",
+            "authActive": true
+          },
+          "body": {
+            "contentType": "application/json",
+            "body": "{\n  \"task\": \"mandiin kucing\"\n}"
+          },
+          "requestVariables": [
+            {
+              "key": "id",
+              "value": "8",
+              "active": true
+            }
+          ],
+          "responses": {}
+        },
+        {
+          "v": "11",
+          "name": "Check by ID",
+          "method": "PATCH",
+          "endpoint": "<<baseUrl>>/todo/<<id>>/check",
+          "params": [],
+          "headers": [],
+          "preRequestScript": "",
+          "testScript": "",
+          "auth": {
+            "authType": "inherit",
+            "authActive": true
+          },
+          "body": {
+            "contentType": "application/json",
+            "body": "{\n  \"completed\": true\n}"
+          },
+          "requestVariables": [
+            {
+              "key": "id",
+              "value": "8",
+              "active": true
+            }
+          ],
+          "responses": {}
+        },
+        {
+          "v": "11",
+          "name": "Delete by ID",
+          "method": "DELETE",
+          "endpoint": "<<baseUrl>>/todo/<<id>>",
+          "params": [],
+          "headers": [],
+          "preRequestScript": "",
+          "testScript": "",
+          "auth": {
+            "authType": "inherit",
+            "authActive": true
+          },
+          "body": {
+            "contentType": "application/json",
+            "body": ""
+          },
+          "requestVariables": [
+            {
+              "key": "id",
+              "value": "9",
+              "active": true
+            }
+          ],
+          "responses": {}
+        }
+      ],
+      "auth": {
+        "authType": "inherit",
+        "authActive": true
+      },
+      "headers": [],
+      "_ref_id": "coll_mau89zo8_c251aaf4-a5db-4b8f-8154-546774cc09ea"
+    }
+  ],
+  "requests": [],
+  "auth": {
+    "authType": "bearer",
+    "token": "<<tokenAuth>>",
+    "authActive": true
+  },
+  "headers": [],
+  "_ref_id": "coll_mau7yrt2_fc5cea12-d591-4bad-8239-20ce13c280a7"
+}
