@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"maspulung/gotodo/app/dal"
+	"maspulung/gotodo/app/entities"
 	"maspulung/gotodo/app/routes"
 	"maspulung/gotodo/config"
 	"maspulung/gotodo/config/database"
@@ -17,7 +17,7 @@ func main() {
 
 	config.Init()
 	database.Connect()
-	database.Migrate(&dal.User{}, &dal.Todo{})
+	database.Migrate(&entities.User{}, &entities.Todo{})
 
 	app := fiber.New(fiber.Config{
 		ErrorHandler: utils.ErrorHandler,
