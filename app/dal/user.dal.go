@@ -1,7 +1,7 @@
 package dal
 
 import (
-	"numtostr/gotodo/config/database"
+	"maspulung/gotodo/config/database"
 
 	"gorm.io/gorm"
 )

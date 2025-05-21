@@ -62,7 +62,8 @@ TOKENEXP=
 
 ## Todo Items
 
-- [ ] Adjust API with limit offset to be able displayed as a Grid/Datatables
+- [x] Adjust API task with limit offset to be able displayed as a Grid/Datatables
+- [ ] Adjust API users with limit offset to be able displayed as a Grid/Datatables
 - [ ] Add comments API for a task
 - [ ] Implement concurrent with go routine or channel for aggregation
 - [ ] Add user grouping and display all task with a group

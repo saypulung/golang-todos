@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"numtostr/gotodo/config"
+	"maspulung/gotodo/config"
 
 	"github.com/golang-jwt/jwt/v5"
 )

@@ -3,7 +3,7 @@ package middleware
 import (
 	"strings"
 
-	"numtostr/gotodo/utils/jwt"
+	"maspulung/gotodo/utils/jwt"
 
 	"github.com/gofiber/fiber/v2"
 )

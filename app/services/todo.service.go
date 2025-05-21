@@ -2,10 +2,11 @@ package services
 
 import (
 	"errors"
+	"math"
 
-	"numtostr/gotodo/app/dal"
-	"numtostr/gotodo/app/types"
-	"numtostr/gotodo/utils"
+	"maspulung/gotodo/app/dal"
+	"maspulung/gotodo/app/types"
+	"maspulung/gotodo/utils"
 
 	"github.com/gofiber/fiber/v2"
 	"gorm.io/gorm"
@@ -57,11 +58,15 @@ func GetTodos(c *fiber.Ctx) error {
 
 	d := &[]types.TodoResponse{}
 	var total int64
+	var totalPage int64
 
 	// Get total count for pagination
 	if err := dal.CountTodosByUser(&total, utils.GetUser(c), search).Error; err != nil {
 		return fiber.NewError(fiber.StatusInternalServerError, err.Error())
 	}
+
+	// Calculate total pages
+	totalPage = int64(math.Ceil(float64(total) / float64(limit)))
 
 	// Get paginated and searched todos
 	err := dal.FindTodosByUserWithPagination(d, utils.GetUser(c), search, limit, offset).Error
@@ -72,9 +77,10 @@ func GetTodos(c *fiber.Ctx) error {
 	return c.JSON(&types.TodosResponse{
 		Todos: d,
 		Pagination: &types.PaginationResponse{
-			Page:  page,
-			Limit: limit,
-			Total: total,
+			Page:      page,
+			Limit:     limit,
+			Total:     total,
+			TotalPage: totalPage,
 		},
 	})
 }

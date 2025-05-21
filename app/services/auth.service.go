@@ -3,11 +3,11 @@ package services
 import (
 	"errors"
 
-	"numtostr/gotodo/app/dal"
-	"numtostr/gotodo/app/types"
-	"numtostr/gotodo/utils"
-	"numtostr/gotodo/utils/jwt"
-	"numtostr/gotodo/utils/password"
+	"maspulung/gotodo/app/dal"
+	"maspulung/gotodo/app/types"
+	"maspulung/gotodo/utils"
+	"maspulung/gotodo/utils/jwt"
+	"maspulung/gotodo/utils/password"
 
 	"github.com/gofiber/fiber/v2"
 	"gorm.io/gorm"

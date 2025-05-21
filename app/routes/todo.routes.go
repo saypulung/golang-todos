@@ -1,8 +1,8 @@
 package routes
 
 import (
-	"numtostr/gotodo/app/services"
-	"numtostr/gotodo/utils/middleware"
+	"maspulung/gotodo/app/services"
+	"maspulung/gotodo/utils/middleware"
 
 	"github.com/gofiber/fiber/v2"
 )

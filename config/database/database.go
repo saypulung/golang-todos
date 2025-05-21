@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	"numtostr/gotodo/config"
+	"maspulung/gotodo/config"
 
 	"github.com/glebarez/sqlite"
 	"gorm.io/gorm"

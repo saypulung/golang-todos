@@ -19,9 +19,10 @@ type TodoCreateResponse struct {
 
 // PaginationResponse defines the pagination metadata
 type PaginationResponse struct {
-	Page  int   `json:"page"`
-	Limit int   `json:"limit"`
-	Total int64 `json:"total"`
+	Page      int   `json:"page"`
+	Limit     int   `json:"limit"`
+	Total     int64 `json:"total"`
+	TotalPage int64 `json:"total_page"`
 }
 
 // TodosResponse defines the todos list with pagination
