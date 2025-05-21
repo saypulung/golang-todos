@@ -37,17 +37,45 @@ func CreateTodo(c *fiber.Ctx) error {
 	})
 }
 
-// GetTodos returns the todos list
+// GetTodos returns the todos list with search and pagination
 func GetTodos(c *fiber.Ctx) error {
-	d := &[]types.TodoResponse{}
+	// Get query parameters
+	search := c.Query("search", "")
+	page := c.QueryInt("page", 1)
+	limit := c.QueryInt("limit", 10)
 
-	err := dal.FindTodosByUser(d, utils.GetUser(c)).Error
+	// Validate pagination parameters
+	if page < 1 {
+		page = 1
+	}
+	if limit < 1 || limit > 100 {
+		limit = 10
+	}
+
+	// Calculate offset
+	offset := (page - 1) * limit
+
+	d := &[]types.TodoResponse{}
+	var total int64
+
+	// Get total count for pagination
+	if err := dal.CountTodosByUser(&total, utils.GetUser(c), search).Error; err != nil {
+		return fiber.NewError(fiber.StatusInternalServerError, err.Error())
+	}
+
+	// Get paginated and searched todos
+	err := dal.FindTodosByUserWithPagination(d, utils.GetUser(c), search, limit, offset).Error
 	if err != nil {
-		return fiber.NewError(fiber.StatusConflict, err.Error())
+		return fiber.NewError(fiber.StatusInternalServerError, err.Error())
 	}
 
 	return c.JSON(&types.TodosResponse{
 		Todos: d,
+		Pagination: &types.PaginationResponse{
+			Page:  page,
+			Limit: limit,
+			Total: total,
+		},
 	})
 }
 

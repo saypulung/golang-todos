@@ -44,3 +44,21 @@ func DeleteTodo(todoIden interface{}, userIden interface{}) *gorm.DB {
 func UpdateTodo(todoIden interface{}, userIden interface{}, data interface{}) *gorm.DB {
 	return database.DB.Model(&Todo{}).Where("id = ? AND user = ?", todoIden, userIden).Updates(data)
 }
+
+// CountTodosByUser counts total todos for a user with optional search
+func CountTodosByUser(dest *int64, userIden interface{}, search string) *gorm.DB {
+	query := database.DB.Model(&Todo{}).Where("user = ?", userIden)
+	if search != "" {
+		query = query.Where("task LIKE ?", "%"+search+"%")
+	}
+	return query.Count(dest)
+}
+
+// FindTodosByUserWithPagination finds paginated todos with optional search
+func FindTodosByUserWithPagination(dest interface{}, userIden interface{}, search string, limit, offset int) *gorm.DB {
+	query := database.DB.Model(&Todo{}).Where("user = ?", userIden)
+	if search != "" {
+		query = query.Where("task LIKE ?", "%"+search+"%")
+	}
+	return query.Limit(limit).Offset(offset).Order("created_at DESC").Find(dest)
+}

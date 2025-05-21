@@ -7,7 +7,7 @@ import (
 
 var (
 	// PORT returns the server listening port
-	PORT = getEnv("PORT", "8080")
+	PORT = getEnv("PORT", "5000")
 	// DB returns the name of the sqlite database
 	DB = getEnv("DB", "gotodo.db")
 	// TOKENKEY returns the jwt token secret

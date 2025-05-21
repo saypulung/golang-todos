@@ -17,9 +17,17 @@ type TodoCreateResponse struct {
 	Todo *TodoResponse `json:"todo"`
 }
 
-// TodosResponse defines the todos list
+// PaginationResponse defines the pagination metadata
+type PaginationResponse struct {
+	Page  int   `json:"page"`
+	Limit int   `json:"limit"`
+	Total int64 `json:"total"`
+}
+
+// TodosResponse defines the todos list with pagination
 type TodosResponse struct {
-	Todos *[]TodoResponse `json:"todos"`
+	Todos      *[]TodoResponse     `json:"todos"`
+	Pagination *PaginationResponse `json:"pagination,omitempty"`
 }
 
 // CheckTodoDTO defined the payload for the check todo
