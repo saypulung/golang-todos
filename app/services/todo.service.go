@@ -5,35 +5,40 @@ import (
 	"math"
 
 	"maspulung/gotodo/app/dal"
+	"maspulung/gotodo/app/entities"
+	"maspulung/gotodo/app/repositories"
 	"maspulung/gotodo/app/types"
+	"maspulung/gotodo/config/database"
 	"maspulung/gotodo/utils"
 
 	"github.com/gofiber/fiber/v2"
 	"gorm.io/gorm"
 )
 
+var todoRepository = repositories.NewTodoRepository(database.DB)
+
 // CreateTodo is responsible for create todo
 func CreateTodo(c *fiber.Ctx) error {
-	b := new(types.CreateDTO)
+	body := new(types.CreateDTO)
 
-	if err := utils.ParseBodyAndValidate(c, b); err != nil {
+	if err := utils.ParseBodyAndValidate(c, body); err != nil {
 		return err
 	}
 
-	d := &dal.Todo{
-		Task: b.Task,
+	todo := &entities.Todo{
+		Task: body.Task,
 		User: utils.GetUser(c),
 	}
 
-	if err := dal.CreateTodo(d).Error; err != nil {
+	if err := todoRepository.CreateTodo(todo).Error; err != nil {
 		return fiber.NewError(fiber.StatusConflict, err.Error())
 	}
 
 	return c.JSON(&types.TodoCreateResponse{
 		Todo: &types.TodoResponse{
-			ID:        d.ID,
-			Task:      d.Task,
-			Completed: d.Completed,
+			ID:        todo.ID,
+			Task:      todo.Task,
+			Completed: todo.Completed,
 		},
 	})
 }
@@ -56,12 +61,12 @@ func GetTodos(c *fiber.Ctx) error {
 	// Calculate offset
 	offset := (page - 1) * limit
 
-	d := &[]types.TodoResponse{}
+	todoResponse := &[]types.TodoResponse{}
 	var total int64
 	var totalPage int64
 
 	// Get total count for pagination
-	if err := dal.CountTodosByUser(&total, utils.GetUser(c), search).Error; err != nil {
+	if err := todoRepository.CountTodosByUser(&total, utils.GetUser(c), search).Error; err != nil {
 		return fiber.NewError(fiber.StatusInternalServerError, err.Error())
 	}
 
@@ -69,13 +74,13 @@ func GetTodos(c *fiber.Ctx) error {
 	totalPage = int64(math.Ceil(float64(total) / float64(limit)))
 
 	// Get paginated and searched todos
-	err := dal.FindTodosByUserWithPagination(d, utils.GetUser(c), search, limit, offset).Error
+	err := todoRepository.FindTodosByUserWithPagination(todoResponse, utils.GetUser(c), search, limit, offset).Error
 	if err != nil {
 		return fiber.NewError(fiber.StatusInternalServerError, err.Error())
 	}
 
 	return c.JSON(&types.TodosResponse{
-		Todos: d,
+		Todos: todoResponse,
 		Pagination: &types.PaginationResponse{
 			Page:      page,
 			Limit:     limit,
@@ -93,15 +98,15 @@ func GetTodo(c *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusUnprocessableEntity, "Invalid todoID")
 	}
 
-	d := &types.TodoResponse{}
+	todoResponse := &types.TodoResponse{}
 
-	err := dal.FindTodoByUser(d, todoID, utils.GetUser(c)).Error
+	err := todoRepository.FindTodoByUser(todoResponse, todoID, utils.GetUser(c)).Error
 	if errors.Is(err, gorm.ErrRecordNotFound) {
-		return c.JSON(&types.TodoCreateResponse{})
+		return fiber.NewError(fiber.StatusNotFound, "Todo not found")
 	}
 
 	return c.JSON(&types.TodoCreateResponse{
-		Todo: d,
+		Todo: todoResponse,
 	})
 }
 
@@ -113,12 +118,19 @@ func DeleteTodo(c *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusUnprocessableEntity, "Invalid todoID")
 	}
 
-	res := dal.DeleteTodo(todoID, utils.GetUser(c))
+	todoResponse := &types.TodoResponse{}
+
+	var err = todoRepository.FindTodoByUser(todoResponse, todoID, utils.GetUser(c)).Error
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return fiber.NewError(fiber.StatusNotFound, "Todo not found")
+	}
+
+	res := todoRepository.DeleteTodo(todoID, utils.GetUser(c))
 	if res.RowsAffected == 0 {
 		return fiber.NewError(fiber.StatusConflict, "Unable to delete todo")
 	}
 
-	err := res.Error
+	err = res.Error
 	if err != nil {
 		return fiber.NewError(fiber.StatusConflict, err.Error())
 	}
@@ -140,8 +152,13 @@ func CheckTodo(c *fiber.Ctx) error {
 	if err := utils.ParseBodyAndValidate(c, b); err != nil {
 		return err
 	}
+	todoResponse := &types.TodoResponse{}
+	var err = todoRepository.FindTodoByUser(todoResponse, todoID, utils.GetUser(c)).Error
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return fiber.NewError(fiber.StatusNotFound, "Todo not found")
+	}
 
-	err := dal.UpdateTodo(todoID, utils.GetUser(c), map[string]interface{}{"completed": b.Completed}).Error
+	err = todoRepository.UpdateTodo(todoID, utils.GetUser(c), map[string]interface{}{"completed": b.Completed}).Error
 	if err != nil {
 		return fiber.NewError(fiber.StatusConflict, err.Error())
 	}
@@ -164,7 +181,13 @@ func UpdateTodoTitle(c *fiber.Ctx) error {
 		return err
 	}
 
-	err := dal.UpdateTodo(todoID, utils.GetUser(c), &dal.Todo{Task: b.Task}).Error
+	todoResponse := &types.TodoResponse{}
+	var err = todoRepository.FindTodoByUser(todoResponse, todoID, utils.GetUser(c)).Error
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return fiber.NewError(fiber.StatusNotFound, "Todo not found")
+	}
+
+	err = todoRepository.UpdateTodo(todoID, utils.GetUser(c), &dal.Todo{Task: b.Task}).Error
 	if err != nil {
 		return fiber.NewError(fiber.StatusConflict, err.Error())
 	}

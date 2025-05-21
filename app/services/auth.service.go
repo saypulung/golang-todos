@@ -3,8 +3,10 @@ package services
 import (
 	"errors"
 
-	"maspulung/gotodo/app/dal"
+	"maspulung/gotodo/app/entities"
+	"maspulung/gotodo/app/repositories"
 	"maspulung/gotodo/app/types"
+	"maspulung/gotodo/config/database"
 	"maspulung/gotodo/utils"
 	"maspulung/gotodo/utils/jwt"
 	"maspulung/gotodo/utils/password"
@@ -13,66 +15,70 @@ import (
 	"gorm.io/gorm"
 )
 
+var userRepository = repositories.NewUserRepository(database.DB)
+
 // Login service logs in a user
 func Login(ctx *fiber.Ctx) error {
-	b := new(types.LoginDTO)
+	body := new(types.LoginDTO)
 
-	if err := utils.ParseBodyAndValidate(ctx, b); err != nil {
+	if err := utils.ParseBodyAndValidate(ctx, body); err != nil {
 		return err
 	}
 
-	u := &types.UserResponse{}
+	userResponse := &types.UserResponse{}
 
-	err := dal.FindUserByEmail(u, b.Email).Error
+	err := userRepository.FindUserByEmail(userResponse, body.Email).Error
 
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return fiber.NewError(fiber.StatusUnauthorized, "Invalid email or password")
 	}
 
-	if err := password.Verify(u.Password, b.Password); err != nil {
+	if err := password.Verify(userResponse.Password, body.Password); err != nil {
 		return fiber.NewError(fiber.StatusUnauthorized, "Invalid email or password")
 	}
 
-	t := jwt.Generate(&jwt.TokenPayload{
-		ID: u.ID,
+	token := jwt.Generate(&jwt.TokenPayload{
+		ID: userResponse.ID,
 	})
 
 	return ctx.JSON(&types.AuthResponse{
-		User: u,
+		User: userResponse,
 		Auth: &types.AccessResponse{
-			Token: t,
+			Token: token,
 		},
 	})
 }
 
 // Signup service creates a user
 func Signup(ctx *fiber.Ctx) error {
-	b := new(types.SignupDTO)
+	body := new(types.SignupDTO)
 
-	if err := utils.ParseBodyAndValidate(ctx, b); err != nil {
+	if err := utils.ParseBodyAndValidate(ctx, body); err != nil {
 		return err
 	}
 
-	err := dal.FindUserByEmail(&struct{ ID string }{}, b.Email).Error
+	userResponse := &types.UserResponse{}
+
+	err := userRepository.FindUserByEmail(&userResponse, body.Email).Error
 
 	// If email already exists, return
 	if !errors.Is(err, gorm.ErrRecordNotFound) {
 		return fiber.NewError(fiber.StatusConflict, "Email already exists")
 	}
 
-	user := &dal.User{
-		Name:     b.Name,
-		Password: password.Generate(b.Password),
-		Email:    b.Email,
+	user := &entities.User{
+		Name:     body.Name,
+		Password: password.Generate(body.Password),
+		Email:    body.Email,
 	}
 
 	// Create a user, if error return
-	if err := dal.CreateUser(user); err.Error != nil {
+	if err := userRepository.CreateUser(user); err.Error != nil {
 		return fiber.NewError(fiber.StatusConflict, err.Error.Error())
 	}
 
 	// generate access token
-	t := jwt.Generate(&jwt.TokenPayload{
+	token := jwt.Generate(&jwt.TokenPayload{
 		ID: user.ID,
 	})
 
@@ -83,7 +89,7 @@ func Signup(ctx *fiber.Ctx) error {
 			Email: user.Email,
 		},
 		Auth: &types.AccessResponse{
-			Token: t,
+			Token: token,
 		},
 	})
 }
