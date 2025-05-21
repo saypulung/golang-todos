@@ -4,7 +4,6 @@ import (
 	"errors"
 	"math"
 
-	"maspulung/gotodo/app/dal"
 	"maspulung/gotodo/app/entities"
 	"maspulung/gotodo/app/repositories"
 	"maspulung/gotodo/app/types"
@@ -187,7 +186,7 @@ func UpdateTodoTitle(c *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusNotFound, "Todo not found")
 	}
 
-	err = todoRepository.UpdateTodo(todoID, utils.GetUser(c), &dal.Todo{Task: b.Task}).Error
+	err = todoRepository.UpdateTodo(todoID, utils.GetUser(c), &entities.Todo{Task: b.Task}).Error
 	if err != nil {
 		return fiber.NewError(fiber.StatusConflict, err.Error())
 	}
