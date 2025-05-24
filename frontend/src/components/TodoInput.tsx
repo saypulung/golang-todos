@@ -1,27 +1,43 @@
 import { useState } from 'react';
+import type { ReactElement } from 'react';
 import { useTodos } from '../context/TodoContext';
 
-export default function TodoInput() {
+export default function TodoInput(): ReactElement {
   const [text, setText] = useState('');
-  const { addTodo } = useTodos();
+  const { addTodo, isLoading } = useTodos();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (text.trim()) {
-      addTodo(text);
-      setText('');
+      try {
+        await addTodo(text.trim());
+        setText('');
+      } catch (err) {
+        console.error('Error adding todo:', err);
+      }
     }
   };
 
   return (
     <form onSubmit={handleSubmit} className="flex gap-2">
       <input
-        className="flex-grow border p-2 rounded"
+        className="flex-grow border p-2 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
         value={text}
         onChange={e => setText(e.target.value)}
-        placeholder="What do you need to do?"
+        placeholder="Apa yang perlu dilakukan?"
+        disabled={isLoading}
       />
-      <button className="bg-blue-500 text-white px-4 py-2 rounded">Add</button>
+      <button 
+        type="submit"
+        disabled={isLoading || !text.trim()}
+        className={`px-4 py-2 rounded text-white font-medium transition-colors
+          ${isLoading || !text.trim()
+            ? 'bg-blue-400 cursor-not-allowed'
+            : 'bg-blue-500 hover:bg-blue-600'
+          }`}
+      >
+        {isLoading ? 'Menambahkan...' : 'Tambah'}
+      </button>
     </form>
   );
 }
