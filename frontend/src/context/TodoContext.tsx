@@ -54,8 +54,9 @@ export const TodoProvider = ({ children }: { children: ReactNode }) => {
       setIsLoading(true);
       setError(null);
       
-      const response = await http.post<{ todo: Todo }>('/todo/create', { task });
-      setTodos(prev => [response.todo, ...prev]);
+      await http.post<{ todo: Todo }>('/todo/create', { task });
+      // setTodos(prev => [response.todo, ...prev]);
+      fetchTodos({ page: 1, limit: meta.limit});
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Gagal menambahkan todo');
       throw err;
@@ -102,7 +103,8 @@ export const TodoProvider = ({ children }: { children: ReactNode }) => {
       setError(null);
       
       await http.delete(`/todo/${id}`);
-      setTodos(prev => prev.filter(todo => todo.id !== id));
+      // setTodos(prev => prev.filter(todo => todo.id !== id));
+      fetchTodos({ page: meta.page, limit: meta.limit });
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Gagal menghapus todo');
       throw err;
