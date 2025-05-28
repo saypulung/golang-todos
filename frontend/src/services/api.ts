@@ -74,16 +74,16 @@ export const http = {
   get: <T>(url: string, config?: InternalAxiosRequestConfig) => 
     api.get<T>(url, config).then((response: AxiosResponse<T>) => response.data),
   
-  post: <T>(url: string, data?: any, config?: InternalAxiosRequestConfig) =>
+  post: <T>(url: string, data?: object, config?: InternalAxiosRequestConfig) =>
     api.post<T>(url, data, config).then((response: AxiosResponse<T>) => response.data),
   
-  put: <T>(url: string, data?: any, config?: InternalAxiosRequestConfig) =>
+  put: <T>(url: string, data?: object, config?: InternalAxiosRequestConfig) =>
     api.put<T>(url, data, config).then((response: AxiosResponse<T>) => response.data),
   
   delete: <T>(url: string, config?: InternalAxiosRequestConfig) =>
     api.delete<T>(url, config).then((response: AxiosResponse<T>) => response.data),
   
-  patch: <T>(url: string, data?: any, config?: InternalAxiosRequestConfig) =>
+  patch: <T>(url: string, data?: object, config?: InternalAxiosRequestConfig) =>
     api.patch<T>(url, data, config).then((response: AxiosResponse<T>) => response.data),
 };
 

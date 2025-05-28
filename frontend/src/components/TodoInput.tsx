@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import type { ReactElement } from 'react';
-import { useTodos } from '../context/TodoContext';
+import { useTodos } from '../hooks/useTodos';
 
 export default function TodoInput(): ReactElement {
   const [text, setText] = useState('');

@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import TodoInput from '../components/TodoInput';
 import TodoList from '../components/TodoList';
-import { TodoProvider } from '../context/TodoContext';
+import { TodoProvider } from '../context/TodoProvider';
 
 export default function Todo() {
   const navigate = useNavigate();
