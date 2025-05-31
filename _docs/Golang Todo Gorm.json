@@ -65,10 +65,29 @@
           "name": "List",
           "method": "GET",
           "endpoint": "<<baseUrl>>/todo/list",
-          "params": [],
+          "params": [
+            {
+              "key": "page",
+              "value": "1",
+              "active": true,
+              "description": ""
+            },
+            {
+              "key": "limit",
+              "value": "5",
+              "active": true,
+              "description": ""
+            },
+            {
+              "key": "search",
+              "value": "",
+              "active": true,
+              "description": ""
+            }
+          ],
           "headers": [],
           "preRequestScript": "",
-          "testScript": "pw.test(\"Login should be passed\", () => {\n  \tpw.expect(pw.response.status).toBe(200)\n})\n\npw.test(\"Set Auth Header\", () => {\n  let json = pw.response.body;\n  \n  pw.expect(json?.auth?.token).not.toBe(undefined)\n  pw.env.set(\"tokenAuth\", json?.auth?.token)\n  pw.expect(pw.env.get(\"tokenAuth\")).toBe(json?.auth?.token)\n})",
+          "testScript": "pw.test(\"Login should be passed\", () => {\n  \tpw.expect(pw.response.status).toBe(200)\n})",
           "auth": {
             "authType": "inherit",
             "authActive": true
@@ -95,7 +114,7 @@
           },
           "body": {
             "contentType": "application/json",
-            "body": "{\n  \"task\": \"cleanup kandang\"\n}"
+            "body": "{\n  \"task\": \"dokumentasi API test\"\n}"
           },
           "requestVariables": [],
           "responses": {}
@@ -120,7 +139,7 @@
           "requestVariables": [
             {
               "key": "id",
-              "value": "9",
+              "value": "26",
               "active": true
             }
           ],
@@ -141,12 +160,12 @@
           },
           "body": {
             "contentType": "application/json",
-            "body": "{\n  \"task\": \"mandiin kucing\"\n}"
+            "body": "{\n  \"task\": \"test API\"\n}"
           },
           "requestVariables": [
             {
               "key": "id",
-              "value": "8",
+              "value": "22",
               "active": true
             }
           ],
@@ -172,7 +191,7 @@
           "requestVariables": [
             {
               "key": "id",
-              "value": "8",
+              "value": "22",
               "active": true
             }
           ],
@@ -198,7 +217,7 @@
           "requestVariables": [
             {
               "key": "id",
-              "value": "9",
+              "value": "22",
               "active": true
             }
           ],
@@ -206,8 +225,8 @@
         }
       ],
       "auth": {
-        "authType": "inherit",
-        "authActive": true
+        "authActive": true,
+        "authType": "inherit"
       },
       "headers": [],
       "_ref_id": "coll_mau89zo8_c251aaf4-a5db-4b8f-8154-546774cc09ea"
